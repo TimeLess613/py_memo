@@ -1,8 +1,9 @@
+import os
 from datetime import datetime
 import logging
 from logging.handlers import TimedRotatingFileHandler
 
-def setup_logger(name=__name__, level=logging.DEBUG, when="D", interval=1, backupCount=30, fmt='[%(asctime)s] [%(name)s] [%(levelname)s] - %(message)s'):
+def setup_logger(log_dir=None, name=__name__, level=logging.DEBUG, when="D", interval=1, backupCount=30, fmt='[%(asctime)s] [%(levelname)s] - %(message)s'):
     '''
     usage:
         # In other_module.py import this module as follows
@@ -14,9 +15,8 @@ def setup_logger(name=__name__, level=logging.DEBUG, when="D", interval=1, backu
         logger = logging.getLogger(name)
         logger.setLevel(level)
 
-        # 动态生成日志文件名
         log_filename = datetime.now().strftime('%Y-%m-%d') + '.log'
-        handler = TimedRotatingFileHandler(log_filename, when=when, interval=interval, backupCount=backupCount, encoding='utf-8')
+        handler = TimedRotatingFileHandler(log_dir+log_filename, when=when, interval=interval, backupCount=backupCount, encoding='utf-8')
         handler.setFormatter(logging.Formatter(fmt))
 
         logger.addHandler(handler)
@@ -25,5 +25,7 @@ def setup_logger(name=__name__, level=logging.DEBUG, when="D", interval=1, backu
         print(f"Error setting up logger: {e}")
         raise
 
-
-logger = setup_logger()
+log_dir=''
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
+logger = setup_logger(log_dir=log_dir)
