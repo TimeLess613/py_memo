@@ -10,7 +10,8 @@ def setup_logger(log_dir=None, name=__name__, level=logging.DEBUG, when="D", int
         from my_logger import logger
         logger.info('这是一条按天保存的日志信息。')
     '''
-
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
     try:
         logger = logging.getLogger(name)
         logger.setLevel(level)
@@ -20,12 +21,11 @@ def setup_logger(log_dir=None, name=__name__, level=logging.DEBUG, when="D", int
         handler.setFormatter(logging.Formatter(fmt))
 
         logger.addHandler(handler)
+        
         return logger
     except Exception as e:
         print(f"Error setting up logger: {e}")
         raise
 
 log_dir=''
-if not os.path.exists(log_dir):
-    os.makedirs(log_dir)
 logger = setup_logger(log_dir=log_dir)
